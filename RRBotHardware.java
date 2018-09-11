@@ -63,21 +63,28 @@ public class RRBotHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "left_drive");
-        rightDrive = hwMap.get(DcMotor.class, "right_drive");
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        rearRightMotor  = hwMap.get(DcMotor.class, "rear_right");
+        rearLeftMotor = hwMap.get(DcMotor.class, "rear_left");
+        frontRightMotor = hwMap.get(DcMotor.class, "front_right");
+        frontLeftMotor = hwMap.get(DcMotor.class, "front_left");
+
+        //set motors to drive forwards
+        rearRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        rearLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        leftArm.setPower(0);
+        rearRightMotor.setPower(0);
+        rearLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
 
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //set drive motors to run using encoder
+        rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "left_hand");
