@@ -41,19 +41,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class RRBot6WheelDrive
 {
-    /* Public OpMode members. */
-    public DcMotor  leftDrive   = null;
-    public DcMotor  rightDrive  = null;
-    public DcMotor  leftArm     = null;
-    public Servo    leftClaw    = null;
-    public Servo    rightClaw   = null;
+    RRBotHardware robot
 
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    /* Public OpMode members. */
+
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
