@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * Controls the robot's 6 wheel drive base
@@ -39,18 +38,74 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class RRBot6WheelDrive
 {
-    RRBotHardware robot;
+    //construct an RRBotHardware object to reference its stuff
+    RRBotHardware robot = new RRBotHardware();
 
     /* Public OpMode members. */
 
 
     /* local OpMode members. */
-    private ElapsedTime period  = new ElapsedTime();
+    private ElapsedTime autoMoveTime  = new ElapsedTime();
 
-    /* Constructor */
+    private boolean isAutoMove = false;
+    private double autoTime;
+
+    /**
+     * Constructor gets hardware object from teleop class
+     * @param robot contains the hardware elements of the robot
+     */
     public RRBot6WheelDrive(RRBotHardware robot){
         this.robot = robot;
     }
-    
+
+    /**
+     * Sets the motor power for manual drive.
+     */
+    public void setMotorPower(leftPower, rightPower){
+        rearRightMotor.setPower(rightPower);
+        rightDrive.setPower(rightPower);
+    }
+
+    /**
+     * Function to be executed on the joystick input values.
+     */
+    public double inputFunction(){
+        double drive = -gamepad1.left_stick_y;
+        double turn  =  gamepad1.left_stick_x;
+    }
+
+    /**
+     * Automatically moves the robot based on a set speed and time. Meant to be used in teleop.
+     * @param speed speed of movement
+     * @param time how long the movement should take
+     */
+    public void AutoMove(double speed, double time) {
+        isAutoMove = true;
+        autoTime = time;
+
+        autoMoveTime.reset();
+
+        robot.rearRightMotor.setPower(speed);
+        robot.rearLeftMotor.setPower(speed);
+        robot.frontRightMotor.setPower(speed);
+        robot.frontLeftMotor.setPower(speed);
+    }
+
+    /**
+     * Checks if the movement is done by comparing the time elapsed and the time the movement is set to take.
+     */
+    public void AutoMoveEndCheck(){
+        if(autoMoveTime.milliseconds() >= autoTime){
+            isAutoMove = false;
+        }
+    }
+
+    /**
+     * Returns whether an auto move is currently occuring
+     * @return isAutoMove
+     */
+    public boolean getIsAutoMove(){
+        return isAutoMove;
+    }
 }
 
