@@ -29,59 +29,87 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Controls the robot's mecanum drive base
+ * Controls the robot's 6 wheel drive base
  * @author John Brereton
- * @since 9-13-2019
+ * @since 10-20-2018
  */
 public class RRBot6WheelDrive
 {
+<<<<<<< HEAD
     RRBotHardware robot;
+=======
+    //construct an RRBotHardware object to reference its stuff
+    RRBotHardware robot = new RRBotHardware();
+>>>>>>> 10caae9fcf667fc83c195e725a60099b5bcc60f2
 
     /* Public OpMode members. */
 
 
     /* local OpMode members. */
-    private ElapsedTime period  = new ElapsedTime();
+    private ElapsedTime autoMoveTime  = new ElapsedTime();
 
-    /* Constructor */
-    public RRBot6WheelDrive(){
+    private boolean isAutoMove = false;
+    private double autoTime;
 
+    /**
+     * Constructor gets hardware object from teleop class
+     * @param robot contains the hardware elements of the robot
+     */
+    public RRBot6WheelDrive(RRBotHardware robot){
+        this.robot = robot;
     }
 
-    /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
-
-        // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "left_drive");
-        rightDrive = hwMap.get(DcMotor.class, "right_drive");
-        leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-
-        // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        leftArm.setPower(0);
-
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Define and initialize ALL installed servos.
-        leftClaw  = hwMap.get(Servo.class, "left_hand");
-        rightClaw = hwMap.get(Servo.class, "right_hand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+    /**
+     * Sets the motor power for manual drive.
+     */
+    public void setMotorPower(leftPower, rightPower){
+        rearRightMotor.setPower(rightPower);
+        rightDrive.setPower(rightPower);
     }
- }
+
+    /**
+     * Function to be executed on the joystick input values.
+     */
+    public double inputFunction(){
+        double drive = -gamepad1.left_stick_y;
+        double turn  =  gamepad1.left_stick_x;
+    }
+
+    /**
+     * Automatically moves the robot based on a set speed and time. Meant to be used in teleop.
+     * @param speed speed of movement
+     * @param time how long the movement should take
+     */
+    public void AutoMove(double speed, double time) {
+        isAutoMove = true;
+        autoTime = time;
+
+        autoMoveTime.reset();
+
+        robot.rearRightMotor.setPower(speed);
+        robot.rearLeftMotor.setPower(speed);
+        robot.frontRightMotor.setPower(speed);
+        robot.frontLeftMotor.setPower(speed);
+    }
+
+    /**
+     * Checks if the movement is done by comparing the time elapsed and the time the movement is set to take.
+     */
+    public void AutoMoveEndCheck(){
+        if(autoMoveTime.milliseconds() >= autoTime){
+            isAutoMove = false;
+        }
+    }
+
+    /**
+     * Returns whether an auto move is currently occuring
+     * @return isAutoMove
+     */
+    public boolean getIsAutoMove(){
+        return isAutoMove;
+    }
+}
 
