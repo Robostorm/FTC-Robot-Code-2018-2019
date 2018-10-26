@@ -39,7 +39,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RRBot6WheelDrive
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     RRBotHardware robot;
+=======
+    //construct an RRBotHardware object to reference its stuff
+    RRBotHardware robot = new RRBotHardware();
+>>>>>>> 10caae9fcf667fc83c195e725a60099b5bcc60f2
 =======
     //construct an RRBotHardware object to reference its stuff
     RRBotHardware robot = new RRBotHardware();
