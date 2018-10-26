@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class RRBot6WheelDrive
 {
-    RRBotHardware robot
+    RRBotHardware robot;
 
     /* Public OpMode members. */
 
