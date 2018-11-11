@@ -38,17 +38,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class RRBot6WheelDrive
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    RRBotHardware robot;
-=======
+    //RRBotHardware robot;
+
     //construct an RRBotHardware object to reference its stuff
     RRBotHardware robot = new RRBotHardware();
->>>>>>> 10caae9fcf667fc83c195e725a60099b5bcc60f2
-=======
-    //construct an RRBotHardware object to reference its stuff
-    RRBotHardware robot = new RRBotHardware();
->>>>>>> 10caae9fcf667fc83c195e725a60099b5bcc60f2
 
     /* Public OpMode members. */
 
@@ -70,18 +63,18 @@ public class RRBot6WheelDrive
     /**
      * Sets the motor power for manual drive.
      */
-    public void setMotorPower(leftPower, rightPower){
+    /*public void setMotorPower(leftPower, rightPower){
         rearRightMotor.setPower(rightPower);
         rightDrive.setPower(rightPower);
-    }
+    }*/
 
     /**
      * Function to be executed on the joystick input values.
      */
-    public double inputFunction(){
+    /*public double inputFunction(){
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.left_stick_x;
-    }
+    }*/
 
     /**
      * Automatically moves the robot based on a set speed and time. Meant to be used in teleop.

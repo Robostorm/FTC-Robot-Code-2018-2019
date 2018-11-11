@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Teleop Opmode class, contains separate methods that update each mechanism of the robot which are called by loop()
@@ -44,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RRBotTeleop extends OpMode
 {
     //construct an RRBotHardware object to reference its stuff
-    RRBotHardware robot = new RRBotHardware();
+    RRBotHardware robot;
 
     //construct drive class
     RRBot6WheelDrive drive = new RRBot6WheelDrive(robot);
@@ -85,6 +86,9 @@ public class RRBotTeleop extends OpMode
     @Override
     public void loop() {
         double drive = -gamepad1.left_stick_y;
+        double turn  =  gamepad1.right_stick_x;
+        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+        rightRearMotor   = Range.clip(drive - turn, -1.0, 1.0) ;
         DriveUpdate();
 //        // Setup a variable for each drive wheel to save power level for telemetry
 //        double leftPower;
@@ -126,7 +130,8 @@ public class RRBotTeleop extends OpMode
     public void DriveUpdate(){
         if(!drive.getIsAutoMove())
         {
-            drive.setMotorPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, true);
+
+//            drive.setMotorPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, true);
         }
         else
         {
