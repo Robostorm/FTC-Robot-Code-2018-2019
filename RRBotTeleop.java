@@ -26,6 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/*
 
 package org.firstinspires.ftc.teamcode;
 
@@ -35,11 +36,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+*/
 /**
  * Teleop Opmode class, contains separate methods that update each mechanism of the robot which are called by loop()
  * @author John Brereton
  * @since 9-10-2018
- */
+ *//*
+
 
 @TeleOp(name="RRBotTeleop")
 public class RRBotTeleop extends OpMode
@@ -53,9 +56,11 @@ public class RRBotTeleop extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    /*
+    */
+/*
      * Code to run ONCE when the driver hits INIT
-     */
+     *//*
+
     @Override
     public void init() {
         //initialize hardware variables by calling the init function of the RRBotHardware class via the robot object
@@ -65,24 +70,30 @@ public class RRBotTeleop extends OpMode
         telemetry.addData("Status", "Initialized");
     }
 
-    /*
+    */
+/*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+     *//*
+
     @Override
     public void init_loop() {
     }
 
-    /*
+    */
+/*
      * Code to run ONCE when the driver hits PLAY
-     */
+     *//*
+
     @Override
     public void start() {
         runtime.reset();
     }
 
-    /*
+    */
+/*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+     *//*
+
     @Override
     public void loop() {
         double drive = -gamepad1.left_stick_y;
@@ -117,16 +128,20 @@ public class RRBotTeleop extends OpMode
         telemetry.addData("Status", "Run Time: " + runtime.toString());
     }
 
-    /*
+    */
+/*
      * Code to run ONCE after the driver hits STOP
-     */
+     *//*
+
     @Override
     public void stop() {
     }
 
-    /**
+    */
+/**
      * Updates the drive system with manual and automatic movements
-     */
+     *//*
+
     public void DriveUpdate(){
         if(!drive.getIsAutoMove())
         {
@@ -140,3 +155,4 @@ public class RRBotTeleop extends OpMode
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 }
+*/
