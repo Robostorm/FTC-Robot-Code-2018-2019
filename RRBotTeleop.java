@@ -26,133 +26,103 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
 
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-*/
 /**
- * Teleop Opmode class, contains separate methods that update each mechanism of the robot which are called by loop()
- * @author John Brereton
- * @since 9-10-2018
- *//*
+ * This file contains an example of an iterative (Non-Linear) "OpMode".
+ * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
+ * The names of OpModes appear on the menu of the FTC Driver Station.
+ * When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
+ *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all iterative OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
 
-
-@TeleOp(name="RRBotTeleop")
-public class RRBotTeleop extends OpMode
+@TeleOp(name="RRbotTeleop", group="Iterative Opmode")
+public class RRbotTeleop extends OpMode
 {
-    //construct an RRBotHardware object to reference its stuff
-    RRBotHardware robot;
-
-    //construct drive class
-    RRBot6WheelDrive drive = new RRBot6WheelDrive(robot);
-
     // Declare OpMode members.
+    RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
 
-    */
-/*
+    /*
      * Code to run ONCE when the driver hits INIT
-     *//*
-
+     */
     @Override
     public void init() {
-        //initialize hardware variables by calling the init function of the RRBotHardware class via the robot object
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
         robot.init(hardwareMap);
+
+        telemetry.addData("Status", "Initialized");
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
 
-    */
-/*
+    /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     *//*
-
+     */
     @Override
     public void init_loop() {
     }
 
-    */
-/*
+    /*
      * Code to run ONCE when the driver hits PLAY
-     *//*
-
+     */
     @Override
     public void start() {
         runtime.reset();
     }
 
-    */
-/*
+    /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     *//*
-
+     */
     @Override
     public void loop() {
+        // Setup a variable for each drive wheel to save power level for telemetry
+        double leftPower;
+        double rightPower;
+
+        // Choose to drive using either Tank Mode, or POV Mode
+        // Comment out the method that's not used.  The default below is POV.
+
+        // POV Mode uses left stick to go forward, and right stick to turn.
+        // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
+        double turn  =  gamepad1.left_stick_x;
         leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightRearMotor   = Range.clip(drive - turn, -1.0, 1.0) ;
-        DriveUpdate();
-//        // Setup a variable for each drive wheel to save power level for telemetry
-//        double leftPower;
-//        double rightPower;
-//
-//        // Choose to drive using either Tank Mode, or POV Mode
-//        // Comment out the method that's not used.  The default below is POV.
-//
-//        // POV Mode uses left stick to go forward, and right stick to turn.
-//        // - This uses basic math to combine motions and is easier to drive straight.
-//        double drive = -gamepad1.left_stick_y;
-//        double turn  =  gamepad1.right_stick_x;
-//        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-//        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-//
-//        // Tank Mode uses one stick to control each wheel.
-//        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-//        // leftPower  = -gamepad1.left_stick_y ;
-//        // rightPower = -gamepad1.right_stick_y ;
-//
-//        // Send calculated power to wheels
-//        leftDrive.setPower(leftPower);
-//        rightDrive.setPower(rightPower);
+        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+
+        // Send calculated power to wheels
+        robot.frontLeftDrive.setPower(leftPower);
+        robot.rearLeftDrive.setPower(leftPower);
+        robot.frontRightDrive.setPower(rightPower);
+        robot.rearLeftDrive.setPower(rightPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 
-    */
-/*
+    /*
      * Code to run ONCE after the driver hits STOP
-     *//*
-
+     */
     @Override
     public void stop() {
     }
 
-    */
-/**
-     * Updates the drive system with manual and automatic movements
-     *//*
-
-    public void DriveUpdate(){
-        if(!drive.getIsAutoMove())
-        {
-
-//            drive.setMotorPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, true);
-        }
-        else
-        {
-            drive.AutoMoveEndCheck();
-        }
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-    }
 }
-*/

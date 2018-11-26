@@ -43,10 +43,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RRBotHardware
 {
     /* Public OpMode members. */
-    public DcMotor  rearRightMotor = null;
-    public DcMotor  rearLeftMotor = null;
-    public DcMotor  frontRightMotor = null;
-    public DcMotor  frontLeftMotor = null;
+    public DcMotor rearRightDrive = null;
+    public DcMotor rearLeftDrive = null;
+    public DcMotor frontRightDrive = null;
+    public DcMotor frontLeftDrive = null;
+    public DcMotor liftingArm = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -63,28 +64,31 @@ public class RRBotHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        rearRightMotor  = hwMap.get(DcMotor.class, "rear_right");
-        rearLeftMotor = hwMap.get(DcMotor.class, "rear_left");
-        frontRightMotor = hwMap.get(DcMotor.class, "front_right");
-        frontLeftMotor = hwMap.get(DcMotor.class, "front_left");
+        rearRightDrive  = hwMap.get(DcMotor.class, "rear_right");
+        rearLeftDrive = hwMap.get(DcMotor.class, "rear_left");
+        frontRightDrive = hwMap.get(DcMotor.class, "front_right");
+        frontLeftDrive = hwMap.get(DcMotor.class, "front_left");
 
         //set motors to drive forwards
-        rearRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        rearLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rearRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
-        rearRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
+        rearRightDrive.setPower(0);
+        rearLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        frontLeftDrive.setPower(0);
 
         //set drive motors to run using encoder
-        rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //set all motors to run in brake mode
+        
 
         // Define and initialize ALL installed servos.
 
