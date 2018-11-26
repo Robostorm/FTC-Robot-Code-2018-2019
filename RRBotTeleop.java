@@ -97,9 +97,6 @@ public class RRbotTeleop extends OpMode
         double leftPower;
         double rightPower;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
@@ -108,14 +105,17 @@ public class RRbotTeleop extends OpMode
         rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
         // Send calculated power to wheels
-        robot.frontLeftDrive.setPower(leftPower);
+        robot.rearRightDrive.setPower(rightPower);
         robot.rearLeftDrive.setPower(leftPower);
         robot.frontRightDrive.setPower(rightPower);
-        robot.rearLeftDrive.setPower(rightPower);
+        robot.frontLeftDrive.setPower(leftPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+
+        // Use right stick to control lift arm
+        robot.liftArm.setPower(gamepad2.left_stick_y);
     }
 
     /*

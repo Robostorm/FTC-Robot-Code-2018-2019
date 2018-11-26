@@ -51,6 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Test Lifter", group="Iterative Opmode")
+@Disabled
 public class TestLifter extends OpMode
 {
     // Declare OpMode members.
