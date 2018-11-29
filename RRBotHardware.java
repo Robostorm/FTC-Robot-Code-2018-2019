@@ -49,6 +49,7 @@ public class RRBotHardware
     public DcMotor frontLeftDrive = null;
     public DcMotor liftArm = null;
     public Servo liftPin = null;
+    public Servo plow = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -101,6 +102,7 @@ public class RRBotHardware
 
         // Define and initialize ALL installed servos.
         liftPin = hwMap.get(Servo.class, "lift-pin");
+        plow = hwMap.get(Servo.class, "plow");
     }
  }
 
