@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Hardware class, defines the robot's hardware and initializes it
  * @author John Brereton
- * @since 9-10-2018
+ * @since 11-27-2018
  */
 public class RRBotHardware
 {
@@ -48,6 +48,7 @@ public class RRBotHardware
     public DcMotor frontRightDrive = null;
     public DcMotor frontLeftDrive = null;
     public DcMotor liftArm = null;
+    public Servo liftPin = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -99,7 +100,7 @@ public class RRBotHardware
         liftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
-
+        liftPin = hwMap.get(Servo.class, "lift-pin");
     }
  }
 

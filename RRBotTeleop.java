@@ -29,10 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -56,6 +54,15 @@ public class RRbotTeleop extends OpMode
     // Declare OpMode members.
     RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
+    boolean servoInit;
+
+    public void setServoInit(boolean servoInit) {
+        this.servoInit = true;
+    }
+
+    // Setup a variable for each drive wheel to save power level for telemetry
+    double leftPower;
+    double rightPower;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -93,11 +100,27 @@ public class RRbotTeleop extends OpMode
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
+        driveUpdate();
+
+        liftArmUpdate();
+
+        telemetry();
+    }
+
+    /*
+     * Code to run ONCE after the driver hits STOP
+     */
+    @Override
+    public void stop() {
+    }
+
+    /**
+     * Updates the drive system with manual and automatic movements
+     */
+    public void driveUpdate(){
+
+        // Uses left stick to move forward and to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.left_stick_x;
@@ -109,20 +132,36 @@ public class RRbotTeleop extends OpMode
         robot.rearLeftDrive.setPower(leftPower);
         robot.frontRightDrive.setPower(rightPower);
         robot.frontLeftDrive.setPower(leftPower);
+    }
 
-        // Show the elapsed game time and wheel power.
+    /**
+     * Updates the lifting arm. Reads button inputs to move the arm up and down and move the pin in and out
+     */
+    public void liftArmUpdate(){
+        // Use right stick on operator controller to control lift arm
+        robot.liftArm.setPower(gamepad2.left_stick_y);
+
+        // Use "a" button on controller to move pin in and out
+        if(gamepad2.a && servoInit == false){
+            robot.liftPin.setPosition(1);
+            servoInit = true;
+        }else if(gamepad2.a && servoInit == true){
+            robot.liftPin.setPosition(0);
+            servoInit = false;
+        }
+    }
+
+    /**
+     * Shows debug values to be on the driver station
+     */
+    public void telemetry(){
+        // Show the elapsed game time
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+        // Show the wheel power
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
-        // Use right stick to control lift arm
-        robot.liftArm.setPower(gamepad2.left_stick_y);
+        // Show the state of the Pin
+        telemetry.addData("Pin", "Initiated: " + servoInit);
     }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-    }
-
 }
