@@ -55,10 +55,7 @@ public class RRbotTeleop extends OpMode
     RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
     boolean servoInit;
-
-    public void setServoInit(boolean servoInit) {
-        this.servoInit = true;
-    }
+    boolean plowInit;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftPower;
@@ -73,6 +70,12 @@ public class RRbotTeleop extends OpMode
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        // Set the servoInit to true in the beginning of the match
+        servoInit = true;
+
+        // Set plowInit to false in the beginning of the match
+        plowInit = false;
 
         telemetry.addData("Status", "Initialized");
 
@@ -105,6 +108,8 @@ public class RRbotTeleop extends OpMode
 
         liftArmUpdate();
 
+        plowUpdate();
+
         telemetry();
     }
 
@@ -118,7 +123,7 @@ public class RRbotTeleop extends OpMode
     /**
      * Updates the drive system with manual and automatic movements
      */
-    public void driveUpdate(){
+    public void driveUpdate() {
 
         // Uses left stick to move forward and to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
@@ -137,24 +142,35 @@ public class RRbotTeleop extends OpMode
     /**
      * Updates the lifting arm. Reads button inputs to move the arm up and down and move the pin in and out
      */
-    public void liftArmUpdate(){
+    public void liftArmUpdate() {
         // Use right stick on operator controller to control lift arm
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
         // Use "a" button on controller to move pin in and out
-        if(gamepad2.a && servoInit == false){
+        if(gamepad2.a && servoInit == true){
             robot.liftPin.setPosition(1);
-            servoInit = true;
-        }else if(gamepad2.a && servoInit == true){
-            robot.liftPin.setPosition(0);
             servoInit = false;
+        }else if(gamepad2.a && servoInit == false){
+            robot.liftPin.setPosition(0);
+            servoInit = true;
+        }
+    }
+
+    public void plowUpdate() {
+
+        // Use "b' button on operator controller to control plow
+        if (gamepad2.b && plowInit == true) {
+            robot.plow.setPosition(1);
+            plowInit = false;
+        }else if(gamepad2.b && plowInit == false) {
+            plowInit = true;
         }
     }
 
     /**
      * Shows debug values to be on the driver station
      */
-    public void telemetry(){
+    public void telemetry() {
         // Show the elapsed game time
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
