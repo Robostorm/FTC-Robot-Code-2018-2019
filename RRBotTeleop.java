@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="RRbotTeleop", group="Iterative Opmode")
-public class RRbotTeleop extends OpMode
+public class RRBotTeleop extends OpMode
 {
     // Declare OpMode members.
     RRBotHardware robot = new RRBotHardware();
@@ -162,8 +162,19 @@ public class RRbotTeleop extends OpMode
         if (gamepad2.b && plowInit == true) {
             robot.plow.setPosition(1);
             plowInit = false;
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }else if(gamepad2.b && plowInit == false) {
+            robot.plow.setPosition(0);
             plowInit = true;
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
