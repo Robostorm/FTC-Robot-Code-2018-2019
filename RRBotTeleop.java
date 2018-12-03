@@ -35,17 +35,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ * Teleop Opmode class, contains separate methods that update each mechanism of the robot which are called by loop()
+ * @author John Brereton
+ * @since 12-2-2018
  */
 
 @TeleOp(name="RRbotTeleop", group="Iterative Opmode")
@@ -146,36 +138,35 @@ public class RRBotTeleop extends OpMode
         // Use right stick on operator controller to control lift arm
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
-        // Use "a" button on controller to move pin in and out
-        if(gamepad2.a && servoInit == true){
+        // Use "a" button on operator controller to move pin in and out
+        if(gamepad2.b && servoInit == true){
             robot.liftPin.setPosition(1);
             servoInit = false;
-        }else if(gamepad2.a && servoInit == false){
+        }else if(gamepad2.b && servoInit == false){
             robot.liftPin.setPosition(0);
             servoInit = true;
         }
     }
 
+    /**
+     * Updates the plow.  Reads button inputs to move the plow up and down
+     */
     public void plowUpdate() {
-
         // Use "b' button on operator controller to control plow
-        if (gamepad2.b && plowInit == true) {
+        if (gamepad2.a && plowInit == true) {
             robot.plow.setPosition(1);
             plowInit = false;
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }else if(gamepad2.b && plowInit == false) {
+        }else if(gamepad2.a && plowInit == false) {
             robot.plow.setPosition(0);
             plowInit = true;
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
+    }
+
+    /**
+     * Updates the marker mechanism.  Reads button inputs to dispense the marker
+     */
+    public void markerupdate() {
+
     }
 
     /**

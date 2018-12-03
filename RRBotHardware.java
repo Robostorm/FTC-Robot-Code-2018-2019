@@ -38,8 +38,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Hardware class, defines the robot's hardware and initializes it
  * @author John Brereton
- * @since 11-27-2018
+ * @since 12-2-2018
  */
+
 public class RRBotHardware
 {
     /* Public OpMode members. */
