@@ -53,7 +53,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double     TURN_SPEED              = 0.2;
     static final double     LIFT_SPEED              = 1;
 
     @Override
@@ -111,7 +111,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
         sleep(1000);
 
         // Step 4: Drive into crater
-        encoderDrive(DRIVE_SPEED,  70,  70, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  24,  24, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
 
         //sleep(1000);     // pause for servos to move
 

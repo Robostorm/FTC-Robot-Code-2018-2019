@@ -46,7 +46,7 @@ public class RRBotTeleop extends OpMode
     // Declare OpMode members.
     RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
-    boolean servoInit;
+    boolean liftPinInit;
     boolean plowInit;
 
     // Setup a variable for each drive wheel to save power level for telemetry
@@ -64,7 +64,7 @@ public class RRBotTeleop extends OpMode
         robot.init(hardwareMap);
 
         // Set the servoInit to true in the beginning of the match
-        servoInit = true;
+        liftPinInit = true;
 
         // Set plowInit to false in the beginning of the match
         plowInit = false;
@@ -139,12 +139,12 @@ public class RRBotTeleop extends OpMode
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
         // Use "a" button on operator controller to move pin in and out
-        if(gamepad2.b && servoInit == true){
+        if(gamepad2.b && liftPinInit == true){
             robot.liftPin.setPosition(1);
-            servoInit = false;
-        }else if(gamepad2.b && servoInit == false){
+            liftPinInit = false;
+        }else if(gamepad2.b && liftPinInit == false){
             robot.liftPin.setPosition(0);
-            servoInit = true;
+            liftPinInit = true;
         }
     }
 
@@ -152,7 +152,7 @@ public class RRBotTeleop extends OpMode
      * Updates the plow.  Reads button inputs to move the plow up and down
      */
     public void plowUpdate() {
-        // Use "b' button on operator controller to control plow
+        // Use "a" button on operator controller to control plow
         if (gamepad2.a && plowInit == true) {
             robot.plow.setPosition(1);
             plowInit = false;
@@ -160,13 +160,6 @@ public class RRBotTeleop extends OpMode
             robot.plow.setPosition(0);
             plowInit = true;
         }
-    }
-
-    /**
-     * Updates the marker mechanism.  Reads button inputs to dispense the marker
-     */
-    public void markerupdate() {
-
     }
 
     /**
@@ -180,6 +173,9 @@ public class RRBotTeleop extends OpMode
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
         // Show the state of the Pin
-        telemetry.addData("Pin", "Initiated: " + servoInit);
+        telemetry.addData("Pin", "Initiated: " + liftPinInit);
+
+        // Show the state of the Plow
+        telemetry.addData("Pin", "Initiated: " + plowInit);
     }
 }
