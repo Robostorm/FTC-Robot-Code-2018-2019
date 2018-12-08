@@ -154,10 +154,10 @@ public class RRBotTeleop extends OpMode
     public void plowUpdate() {
         // Use "a" button on operator controller to control plow
         if (gamepad2.a && plowInit == true) {
-            robot.plow.setPosition(1);
+            robot.plow.setPosition(0);
             plowInit = false;
         }else if(gamepad2.a && plowInit == false) {
-            robot.plow.setPosition(0);
+            robot.plow.setPosition(1);
             plowInit = true;
         }
     }

@@ -34,12 +34,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+/**
+ * Autonomous opmode that descends off the lander and drives into the crater
+ * @author John Brereton
+ * @since 12-2-2018
+ */
 
-
-
-@Autonomous(name="RRBotAuto", group="Pushbot")
-public class RRBotAuto extends LinearOpMode {
+@Autonomous(name="RRBotAuto_Crater_Old", group="Pushbot")
+public class RRBotAuto_Crater_Old extends LinearOpMode {
 
     /* Declare OpMode members. */
     RRBotHardware         robot   = new RRBotHardware();   // Use a Pushbot's hardware
@@ -109,7 +111,7 @@ public class RRBotAuto extends LinearOpMode {
         sleep(1000);
 
         // Step 4: Drive into crater
-        encoderDrive(DRIVE_SPEED,  6,  6, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  70,  70, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
 
         //sleep(1000);     // pause for servos to move
 
@@ -136,8 +138,6 @@ public class RRBotAuto extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = robot.rearRightDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rearLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newRightTarget = robot.frontRightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             newRightTarget = robot.frontLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             robot.rearRightDrive.setTargetPosition(newLeftTarget);
             robot.rearLeftDrive.setTargetPosition(newRightTarget);

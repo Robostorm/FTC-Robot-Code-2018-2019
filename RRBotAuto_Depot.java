@@ -37,8 +37,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * Autonomous opmode that descends off the lander and drives into the crater
  * @author John Brereton
@@ -47,7 +45,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @Autonomous(name="Pushbot: Auto Drive By Gyro", group="Pushbot")
 @Disabled
-public class RRBotAuto_Crater extends LinearOpMode {
+public class RRBotAuto_Depot extends LinearOpMode {
 
     /* Declare OpMode members. */
     RRBotHardware robot   = new RRBotHardware();
