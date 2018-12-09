@@ -48,6 +48,8 @@ public class RRBotTeleop extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     boolean liftPinInit;
     boolean plowInit;
+    boolean prevLiftArm;
+    boolean prevPlow;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftPower;
@@ -139,18 +141,18 @@ public class RRBotTeleop extends OpMode
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
         // Use "a" button on operator controller to move pin in and out
-        if (gamepad2.b && temporary) {
-            if (gamepad2.b && liftPinInit == true) {
+        if (gamepad2.b && !prevLiftArm) {
+            if (liftPinInit) {
                 robot.liftPin.setPosition(1);
                 liftPinInit = false;
-            } else if (gamepad2.b && liftPinInit == false) {
+            } else if (!liftPinInit) {
                 robot.liftPin.setPosition(0);
                 liftPinInit = true;
             }
-            temporary = true;
+            prevLiftArm = true;
         }
         if (!gamepad2.b){
-            tempoary = false;
+            prevLiftArm = false;
         }
     }
 
@@ -159,7 +161,7 @@ public class RRBotTeleop extends OpMode
      */
     public void plowUpdate() {
         // Use "a" button on operator controller to control plow
-        if(gamepad2.a && !temperary) {
+        if(gamepad2.a && !prevPlow) {
             if (plowInit) {
                 robot.plow.setPosition(0);
                 plowInit = false;
@@ -167,10 +169,10 @@ public class RRBotTeleop extends OpMode
                 robot.plow.setPosition(1);
                 plowInit = true;
             }
-            temporary = true;
+            prevPlow = true;
         }
         if(!gamepad2.a){
-            temporary = false;
+            prevPlow = false;
         }
     }
 
