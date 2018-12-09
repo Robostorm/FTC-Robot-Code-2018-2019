@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @since 12-2-2018
  */
 
-@Autonomous(name="RRBotAuto_Crater_Old", group="Pushbot")
+@Autonomous(name="RRBotAuto_Crater_Old")
 public class RRBotAuto_Crater_Old extends LinearOpMode {
 
     /* Declare OpMode members. */

@@ -38,7 +38,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
 
-@Autonomous(name="RRBotAuto_Depot_Old", group="Pushbot")
+@Autonomous(name="RRBotAuto_Depot_Old")
 public class RRBotAuto_Depot_Old extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -139,10 +139,9 @@ public class RRBotAuto_Depot_Old extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.rearRightDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rearLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newRightTarget = robot.frontRightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newRightTarget = robot.frontLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRightTarget = robot.rearRightDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newLeftTarget = robot.rearLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
             robot.rearRightDrive.setTargetPosition(newLeftTarget);
             robot.rearLeftDrive.setTargetPosition(newRightTarget);
             robot.frontRightDrive.setTargetPosition(newRightTarget);

@@ -48,7 +48,7 @@ import java.util.Locale;
  * @since 12-2-2018
  */
 
-@Autonomous(name="RRBotAuto_Crater_Old", group="Pushbot")
+@Autonomous(name="RRBotAuto_Crater")
 public class RRBotAuto_Crater extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -61,7 +61,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double     TURN_SPEED              = 0.2;
     static final double     LIFT_SPEED              = 1;
 
     //gyro variables
@@ -126,8 +126,26 @@ public class RRBotAuto_Crater extends LinearOpMode {
         // Wait one second before moving
         sleep(1000);
 
-        // Step 4: Drive into crater
-        encoderDrive(DRIVE_SPEED,  70,  70, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        // Step 4: Drive forward 24 inches
+        encoderDrive(DRIVE_SPEED,  24,  24, 5.0);
+
+        // Step 5: Turn left 90 degrees
+        TurnByGyro(TURN_SPEED, "left", 90);
+
+        // Step 6: Drive forward 45 inches
+        encoderDrive(DRIVE_SPEED, 45, 45, 5.0);
+
+        // Step 7: turn Left 45 degrees
+        TurnByGyro(TURN_SPEED, "left", 45);
+
+        // Step 8: Drive forward 56 inches
+        encoderDrive(DRIVE_SPEED, 56, 56, 5.0);
+
+        // Step 9: Drop marker
+
+
+        // Step 10: Drive Backward 86 inches
+        encoderDrive(DRIVE_SPEED, -86, -86, 5.0);
 
         //sleep(1000);     // pause for servos to move
 
@@ -208,7 +226,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
-    public void TurnByGyro(String direction, int angle, double speed)
+    public void TurnByGyro(double speed, String direction, int angle)
     {
         //get angle values from the gyro
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
