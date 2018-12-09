@@ -139,12 +139,18 @@ public class RRBotTeleop extends OpMode
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
         // Use "a" button on operator controller to move pin in and out
-        if(gamepad2.b && liftPinInit == true){
-            robot.liftPin.setPosition(1);
-            liftPinInit = false;
-        }else if(gamepad2.b && liftPinInit == false){
-            robot.liftPin.setPosition(0);
-            liftPinInit = true;
+        if (gamepad2.b && temporary) {
+            if (gamepad2.b && liftPinInit == true) {
+                robot.liftPin.setPosition(1);
+                liftPinInit = false;
+            } else if (gamepad2.b && liftPinInit == false) {
+                robot.liftPin.setPosition(0);
+                liftPinInit = true;
+            }
+            temporary = true;
+        }
+        if (!gamepad2.b){
+            tempoary = false;
         }
     }
 
@@ -153,12 +159,18 @@ public class RRBotTeleop extends OpMode
      */
     public void plowUpdate() {
         // Use "a" button on operator controller to control plow
-        if (gamepad2.a && plowInit == true) {
-            robot.plow.setPosition(0);
-            plowInit = false;
-        }else if(gamepad2.a && plowInit == false) {
-            robot.plow.setPosition(1);
-            plowInit = true;
+        if(gamepad2.a && !temperary) {
+            if (plowInit) {
+                robot.plow.setPosition(0);
+                plowInit = false;
+            } else if (!plowInit) {
+                robot.plow.setPosition(1);
+                plowInit = true;
+            }
+            temporary = true;
+        }
+        if(!gamepad2.a){
+            temporary = false;
         }
     }
 
