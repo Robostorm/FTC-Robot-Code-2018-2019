@@ -55,7 +55,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
     RRBotHardware         robot   = new RRBotHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -76,6 +76,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+        initGyro();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
@@ -133,19 +134,19 @@ public class RRBotAuto_Crater extends LinearOpMode {
         TurnByGyro(TURN_SPEED, "left", 90);
 
         // Step 6: Drive forward 45 inches
-        encoderDrive(DRIVE_SPEED, 45, 45, 5.0);
+        encoderDrive(DRIVE_SPEED, 65, 65, 10.0);
 
         // Step 7: turn Left 45 degrees
-        TurnByGyro(TURN_SPEED, "left", 45);
+        TurnByGyro(TURN_SPEED, "left", 42);
 
         // Step 8: Drive forward 56 inches
-        encoderDrive(DRIVE_SPEED, 56, 56, 5.0);
+        encoderDrive(DRIVE_SPEED, 98, 98, 10.0);
 
         // Step 9: Drop marker
 
 
         // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -86, -86, 5.0);
+        encoderDrive(DRIVE_SPEED, -110, -110, 10.0);
 
         //sleep(1000);     // pause for servos to move
 
@@ -173,10 +174,10 @@ public class RRBotAuto_Crater extends LinearOpMode {
             // Determine new target position, and pass to motor controller
             newLeftTarget = robot.rearRightDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightTarget = robot.frontLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.rearRightDrive.setTargetPosition(newLeftTarget);
-            robot.rearLeftDrive.setTargetPosition(newRightTarget);
+            robot.rearRightDrive.setTargetPosition(newRightTarget);
+            robot.rearLeftDrive.setTargetPosition(newLeftTarget);
             robot.frontRightDrive.setTargetPosition(newRightTarget);
-            robot.frontLeftDrive.setTargetPosition(newRightTarget);
+            robot.frontLeftDrive.setTargetPosition(newLeftTarget);
 
             // Turn On RUN_TO_POSITION
             robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -226,8 +227,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
-    public void TurnByGyro(double speed, String direction, int angle)
-    {
+    public void TurnByGyro(double speed, String direction, int angle) {
         //get angle values from the gyro
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         float startHeading = angles.firstAngle; //define the starting angle
@@ -260,6 +260,20 @@ public class RRBotAuto_Crater extends LinearOpMode {
         }
 
         TurnOffMotors();
+    }
+
+    /**
+     * Initialize the BNO055IMU gyro
+     */
+    public void initGyro()
+    {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
     }
 
     //gyro angle formatting methods
