@@ -127,12 +127,12 @@ public class RRBotAuto_Depot extends LinearOpMode {
         // Wait one second before moving
         sleep(1000);
 
-        // Step 4: Drive forward 24 inches
+        // Step 4: Drive forward 58 inches
         encoderDrive(DRIVE_SPEED,  58,  58, 5.0);
 
         // Step 5: drop marker
 
-        // Step 6: turn Left 45 degrees
+        // Step 6: turn Left 42 degrees
         TurnByGyro(TURN_SPEED, "left", 42);
 
         // Step 7: Drive Backward 110 inches
