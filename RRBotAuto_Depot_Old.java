@@ -30,15 +30,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
-
+/**
+ * Autonomous opmode that descends off the lander drops marker in the depot and drives into the crater
+ * @author John Brereton
+ * @since 12-9-2018
+ */
 
 @Autonomous(name="RRBotAuto_Depot_Old")
+@Disabled
 public class RRBotAuto_Depot_Old extends LinearOpMode {
 
     /* Declare OpMode members. */
