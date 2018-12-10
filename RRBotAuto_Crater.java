@@ -133,13 +133,13 @@ public class RRBotAuto_Crater extends LinearOpMode {
         // Step 5: Turn left 90 degrees
         TurnByGyro(TURN_SPEED, "left", 90);
 
-        // Step 6: Drive forward 45 inches
+        // Step 6: Drive forward 68 inches
         encoderDrive(DRIVE_SPEED, 68, 68, 10.0);
 
-        // Step 7: turn Left 45 degrees
+        // Step 7: turn Left 42 degrees
         TurnByGyro(TURN_SPEED, "left", 42);
 
-        // Step 8: Drive forward 56 inches
+        // Step 8: Drive forward 98 inches
         encoderDrive(DRIVE_SPEED, 98, 98, 10.0);
 
         // Step 9: Drop marker
