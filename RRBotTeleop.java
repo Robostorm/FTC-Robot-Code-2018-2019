@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Teleop Opmode class, contains separate methods that update each mechanism of the robot which are called by loop()
  * @author John Brereton
- * @since 12-2-2018
+ * @since 12-9-2018
  */
 
 @TeleOp(name="RRbotTeleop", group="Iterative Opmode")

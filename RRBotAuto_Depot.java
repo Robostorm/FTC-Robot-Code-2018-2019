@@ -43,9 +43,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Locale;
 
 /**
- * Autonomous opmode that descends off the lander and drives into the crater
+ * Autonomous opmode that descends off the lander, drops team marker, and drives into the crater on depot side
  * @author John Brereton
- * @since 12-2-2018
+ * @since 12-9-2018
  */
 
 @Autonomous(name="RRBotAuto_Depot")

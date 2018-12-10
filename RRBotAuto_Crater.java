@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,9 +43,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Locale;
 
 /**
- * Autonomous opmode that descends off the lander and drives into the crater
+ * Autonomous opmode that descends off the lander, drops team marker, and drives into the crater on crater side
  * @author John Brereton
- * @since 12-2-2018
+ * @since 12-9-2018
  */
 
 @Autonomous(name="RRBotAuto_Crater")

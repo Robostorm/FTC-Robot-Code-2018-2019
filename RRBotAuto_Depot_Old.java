@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
- * Autonomous opmode that descends off the lander drops marker in the depot and drives into the crater
+ * Autonomous opmode that descends off the lander and drives into the crater on depot side
  * @author John Brereton
  * @since 12-9-2018
  */

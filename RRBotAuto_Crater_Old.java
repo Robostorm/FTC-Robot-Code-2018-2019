@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Autonomous opmode that descends off the lander drops marker in the depot and drives into the crater on the crater side
+ * Autonomous opmode that descends off the lander and drives into the crater on creator side
  * @author John Brereton
  * @since 12-9-2018
  */
