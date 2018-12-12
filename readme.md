@@ -3,4 +3,8 @@
 ## Current Classes
 - RRBotAuto_Crater:
 - RRBotAuto_Crater_Old:
-- 
+- RRBotAuto_Depot:
+- RRBotAuto_Depot_Old:
+- RRBotHardware:
+- RRBotTeleop:
+- SensorBNO055IMUCalibration:
