@@ -99,26 +99,28 @@ public class RRBotAuto_Crater extends LinearOpMode {
         // Wait one second before moving
         sleep(1000);
 
-        // Step 4: Drive forward 24 inches
-        encoderDrive(DRIVE_SPEED,  24,  24, 5.0);
+        // Step 4: Drive forward 16 inches
+        encoderDrive(DRIVE_SPEED,  16,  16, 5.0);
 
         // Step 5: Turn left 90 degrees
         TurnByGyro(TURN_SPEED, "left", 90);
 
         // Step 6: Drive forward 68 inches
-        encoderDrive(DRIVE_SPEED, 68, 68, 10.0);
+        encoderDrive(DRIVE_SPEED, 85, 85, 10.0);
 
         // Step 7: turn Left 42 degrees
         TurnByGyro(TURN_SPEED, "left", 42);
 
         // Step 8: Drive forward 98 inches
-        encoderDrive(DRIVE_SPEED, 98, 98, 10.0);
+        encoderDrive(DRIVE_SPEED, 80, 80, 10.0);
 
         // Step 9: Drop marker
-
+        robot.markerDropper.setPosition(1);
+        sleep(500);
+        robot.markerDropper.setPosition(0);
 
         // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -110, -110, 10.0);
+        encoderDrive(DRIVE_SPEED, -105, -105, 10.0);
 
         //sleep(1000);     // pause for servos to move
 

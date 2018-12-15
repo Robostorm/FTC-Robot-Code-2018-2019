@@ -23,7 +23,7 @@ import java.util.Locale;
 public class RRBotAuto_Depot extends LinearOpMode {
 
     /* Declare OpMode members. */
-    RRBotHardware         robot   = new RRBotHardware();   // Use a Pushbot's hardware
+    RRBotHardware         robot   = new RRBotHardware();
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
@@ -99,15 +99,18 @@ public class RRBotAuto_Depot extends LinearOpMode {
         sleep(1000);
 
         // Step 4: Drive forward 58 inches
-        encoderDrive(DRIVE_SPEED,  58,  58, 5.0);
+        encoderDrive(DRIVE_SPEED,  55,  55, 5.0);
 
         // Step 5: drop marker
+        robot.markerDropper.setPosition(1);
+        sleep(500);
+        robot.markerDropper.setPosition(0);
 
         // Step 6: turn Left 42 degrees
         TurnByGyro(TURN_SPEED, "left", 42);
 
-        // Step 7: Drive Backward 110 inches
-        encoderDrive(DRIVE_SPEED, -110, -110, 10.0);
+        // Step 7: Drive Backward 90 inches
+        encoderDrive(DRIVE_SPEED, -90, -90, 10.0);
 
         /**
         // Step 5: Turn left 90 degrees
