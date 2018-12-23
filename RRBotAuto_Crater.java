@@ -100,19 +100,19 @@ public class RRBotAuto_Crater extends LinearOpMode {
         sleep(1000);
 
         // Step 4: Drive forward 16 inches
-        encoderDrive(DRIVE_SPEED,  16,  16, 5.0);
+        encoderDrive(DRIVE_SPEED,  17,  17, 5.0);
 
         // Step 5: Turn left 90 degrees
         TurnByGyro(TURN_SPEED, "left", 90);
 
-        // Step 6: Drive forward 68 inches
-        encoderDrive(DRIVE_SPEED, 85, 85, 10.0);
+        // Step 6: Drive forward 85 inches
+        encoderDrive(DRIVE_SPEED, 52, 52, 10.0);
 
         // Step 7: turn Left 42 degrees
-        TurnByGyro(TURN_SPEED, "left", 42);
+        TurnByGyro(TURN_SPEED, "left", 35);
 
         // Step 8: Drive forward 98 inches
-        encoderDrive(DRIVE_SPEED, 80, 80, 10.0);
+        encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
 
         // Step 9: Drop marker
         robot.markerDropper.setPosition(1);
@@ -120,7 +120,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
         robot.markerDropper.setPosition(0);
 
         // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -105, -105, 10.0);
+        encoderDrive(DRIVE_SPEED, -60, -60, 10.0);
 
         //sleep(1000);     // pause for servos to move
 
@@ -139,19 +139,24 @@ public class RRBotAuto_Crater extends LinearOpMode {
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int newRearRightTarget;
+        int newRearLeftTarget;
+        int newFrontRightTarget;
+        int newFrontLeftTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.rearRightDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.frontLeftDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.rearRightDrive.setTargetPosition(newRightTarget);
-            robot.rearLeftDrive.setTargetPosition(newLeftTarget);
-            robot.frontRightDrive.setTargetPosition(newRightTarget);
-            robot.frontLeftDrive.setTargetPosition(newLeftTarget);
+            newRearRightTarget = robot.rearRightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.rearLeftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.frontRightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newFrontLeftTarget = robot.frontLeftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+
+            robot.rearRightDrive.setTargetPosition(newRearRightTarget);
+            robot.rearLeftDrive.setTargetPosition(newRearLeftTarget);
+            robot.frontRightDrive.setTargetPosition(newFrontRightTarget);
+            robot.frontLeftDrive.setTargetPosition(newFrontLeftTarget);
 
             // Turn On RUN_TO_POSITION
             robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -177,8 +182,9 @@ public class RRBotAuto_Crater extends LinearOpMode {
                    (robot.rearRightDrive.isBusy() && robot.rearLeftDrive.isBusy() && robot.frontRightDrive.isBusy() && robot.frontLeftDrive.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
+                telemetry.addData("Path1",  "Front Running to %7d :%7d", newFrontRightTarget,  newFrontLeftTarget);
+                telemetry.addData("Path2",  "Rear Running to %7d :%7d", newRearRightTarget,  newRearLeftTarget);
+                telemetry.addData("Path3",  "Running at %7d :%7d",
                                             robot.rearRightDrive.getCurrentPosition(),
                                             robot.rearLeftDrive.getCurrentPosition(),
                                             robot.frontRightDrive.getCurrentPosition(),

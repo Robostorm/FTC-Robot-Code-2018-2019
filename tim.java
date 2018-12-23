@@ -14,16 +14,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Locale;
 
 /**
- * Autonomous opmode that descends off the lander, drops team marker, and drives into the crater on depot side
+ * Autonomous opmode that descends off the lander, drops team marker, and drives into the crater on crater side
  * @author John Brereton
  * @since 12-9-2018
  */
 
-@Autonomous(name="RRBotAuto_Depot")
-public class RRBotAuto_Depot extends LinearOpMode {
+@Autonomous(name="TimCode")
+// @Disabled
+public class tim extends LinearOpMode {
 
     /* Declare OpMode members. */
-    RRBotHardware         robot   = new RRBotHardware();
+    RRBotHardware         robot   = new RRBotHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
@@ -81,65 +82,7 @@ public class RRBotAuto_Depot extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-        // Step 1:  Go down for 7 seconds
-        robot.liftArm.setPower(LIFT_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 6)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        // Step 2:  Stop Lowering
-        robot.liftArm.setPower(0);
-
-        // Step 3:  Release the servo
-        robot.liftPin.setPosition(1);
-
-        // Wait one second before moving
-        sleep(1000);
-
-        // Step 4: Drive forward 58 inches
-        encoderDrive(DRIVE_SPEED,  59,  59, 5.0);
-
-        // Step 5: drop marker
-        robot.markerDropper.setPosition(1);
-        sleep(500);
-        robot.markerDropper.setPosition(0);
-
-        // Step 6: turn Left 42 degrees
-        TurnByGyro(TURN_SPEED, "left", 50);
-
-        // Step 7: Drive Backward 30 inches
-        encoderDrive(DRIVE_SPEED, -30, -30, 10.0);
-
-        // Step 8: Turn berato turn tim turn
-        TurnByGyro(TURN_SPEED, "right", 5);
-
-        // Step 9: berato backward tim backward lkj j df lk;j o   sd j  slk  s   l jkl; d ;lk k
-        encoderDrive(DRIVE_SPEED, -42, -42, 10.0);
-
-        // Step 7: Drive Backward 90 inches
-        //encoderDrive(DRIVE_SPEED, -90, -90, 10.0);
-
-        /**
-        // Step 5: Turn left 90 degrees
-        TurnByGyro(TURN_SPEED, "left", 90);
-
-        // Step 6: Drive forward 45 inches
-        encoderDrive(DRIVE_SPEED, 68, 68, 10.0);
-
-        // Step 7: turn Left 45 degrees
-        TurnByGyro(TURN_SPEED, "left", 42);
-
-        // Step 8: Drive forward 56 inches
-        encoderDrive(DRIVE_SPEED, 98, 98, 10.0);
-
-        // Step 9: Drop marker
-
-
-        // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -110, -110, 10.0);
-         **/
+        encoderDrive(1, 50,50,10);
 
         //sleep(1000);     // pause for servos to move
 
