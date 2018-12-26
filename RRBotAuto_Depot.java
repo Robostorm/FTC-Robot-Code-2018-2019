@@ -112,34 +112,11 @@ public class RRBotAuto_Depot extends LinearOpMode {
         // Step 7: Drive Backward 30 inches
         encoderDrive(DRIVE_SPEED, -30, -30, 10.0);
 
-        // Step 8: Turn berato turn tim turn
+        // Step 8: berato
         TurnByGyro(TURN_SPEED, "right", 5);
 
-        // Step 9: berato backward tim backward lkj j df lk;j o   sd j  slk  s   l jkl; d ;lk k
+        // Step 9: berato
         encoderDrive(DRIVE_SPEED, -42, -42, 10.0);
-
-        // Step 7: Drive Backward 90 inches
-        //encoderDrive(DRIVE_SPEED, -90, -90, 10.0);
-
-        /**
-        // Step 5: Turn left 90 degrees
-        TurnByGyro(TURN_SPEED, "left", 90);
-
-        // Step 6: Drive forward 45 inches
-        encoderDrive(DRIVE_SPEED, 68, 68, 10.0);
-
-        // Step 7: turn Left 45 degrees
-        TurnByGyro(TURN_SPEED, "left", 42);
-
-        // Step 8: Drive forward 56 inches
-        encoderDrive(DRIVE_SPEED, 98, 98, 10.0);
-
-        // Step 9: Drop marker
-
-
-        // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -110, -110, 10.0);
-         **/
 
         //sleep(1000);     // pause for servos to move
 
