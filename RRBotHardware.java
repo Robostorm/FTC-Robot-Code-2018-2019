@@ -74,7 +74,6 @@ public class RRBotHardware
 
         // Define and initialize ALL installed servos.
         liftPin = hwMap.get(Servo.class, "lift-pin");
-        plow = hwMap.get(Servo.class, "plow");
         markerDropper = hwMap.get(Servo.class, "marker-dropper");
     }
  }

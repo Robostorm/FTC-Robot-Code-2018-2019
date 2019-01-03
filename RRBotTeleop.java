@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -20,9 +21,11 @@ public class RRBotTeleop extends OpMode
     RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
     boolean liftPinInit;
-    boolean plowInit;
+    boolean markerInit;
+    boolean slowDrive;
+    boolean prevSlowDrive;
     boolean prevLiftArm;
-    boolean prevPlow;
+    boolean prevMarker;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftPower;
@@ -38,11 +41,13 @@ public class RRBotTeleop extends OpMode
          */
         robot.init(hardwareMap);
 
+        robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         // Set the servoInit to true in the beginning of the match
         liftPinInit = true;
 
-        // Set plowInit to false in the beginning of the match
-        plowInit = false;
+        // Set slowDrive to false in the beginning of the match
+        slowDrive = false;
 
         telemetry.addData("Status", "Initialized");
 
@@ -75,7 +80,7 @@ public class RRBotTeleop extends OpMode
 
         liftArmUpdate();
 
-        plowUpdate();
+        markerUpdate();
 
         telemetry();
     }
@@ -96,8 +101,25 @@ public class RRBotTeleop extends OpMode
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.left_stick_x;
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        if (gamepad1.b && !prevSlowDrive) {
+            if (slowDrive) {
+                slowDrive = false;
+            } else {
+                slowDrive = true;
+            }
+            prevSlowDrive = true;
+        }
+        if (!gamepad1.b) {
+            prevSlowDrive = false;
+        }
+
+        if (slowDrive) {
+            leftPower = Range.clip(drive + turn, -1.0, 1.0)/2;
+            rightPower = Range.clip(drive - turn, -1.0, 1.0)/2;
+        } else {
+            leftPower = Range.clip(drive + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive - turn, -1.0, 1.0);
+        }
 
         // Send calculated power to wheels
         robot.rearRightDrive.setPower(rightPower);
@@ -110,8 +132,12 @@ public class RRBotTeleop extends OpMode
      * Updates the lifting arm. Reads button inputs to move the arm up and down and move the pin in and out
      */
     public void liftArmUpdate() {
+
+        robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Use right stick on operator controller to control lift arm
         robot.liftArm.setPower(gamepad2.left_stick_y);
+
+        telemetry.addData("encoder", "encoder value: " + robot.liftArm.getCurrentPosition());
 
         // Use "a" button on operator controller to move pin in and out
         if (gamepad2.b && !prevLiftArm) {
@@ -129,23 +155,19 @@ public class RRBotTeleop extends OpMode
         }
     }
 
-    /**
-     * Updates the plow.  Reads button inputs to move the plow up and down
-     */
-    public void plowUpdate() {
-        // Use "a" button on operator controller to control plow
-        if(gamepad2.a && !prevPlow) {
-            if (plowInit) {
-                robot.plow.setPosition(0);
-                plowInit = false;
-            } else if (!plowInit) {
-                robot.plow.setPosition(1);
-                plowInit = true;
+    public void markerUpdate() {
+        if (gamepad2.y && !prevMarker) {
+            if (markerInit) {
+                robot.markerDropper.setPosition(1);
+                markerInit = false;
+            } else {
+                robot.markerDropper.setPosition(0);
+                markerInit = true;
             }
-            prevPlow = true;
+            prevMarker = true;
         }
-        if(!gamepad2.a){
-            prevPlow = false;
+        if (!gamepad2.y) {
+            prevMarker = false;
         }
     }
 
@@ -161,8 +183,5 @@ public class RRBotTeleop extends OpMode
 
         // Show the state of the Pin
         telemetry.addData("Pin", "Initiated: " + liftPinInit);
-
-        // Show the state of the Plow
-        telemetry.addData("Pin", "Initiated: " + plowInit);
     }
 }

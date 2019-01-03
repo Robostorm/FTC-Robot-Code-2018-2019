@@ -39,7 +39,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.9;
+    static final double     DRIVE_SPEED             = 0.7;
     static final double     TURN_SPEED              = 0.4;
     static final double     LIFT_SPEED              = 1;
 
@@ -100,52 +100,14 @@ public class RRBotAuto_Crater extends LinearOpMode {
                           robot.frontLeftDrive.getCurrentPosition());
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
-        //waitForStart();
-        while (!opModeIsActive() && !isStopRequested()) {
-            telemetry.addData("status", "waiting for start command...");
-            telemetry.update();
-        }
-
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-
-        // Step 1:  Go down for 7 seconds
-        robot.liftArm.setPower(LIFT_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 6)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        // Step 2:  Stop Lowering
-        robot.liftArm.setPower(0);
-
-        // Step 3: Run Vewforia code
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start tracking");
-        telemetry.update();
-        waitForStart();
-
-        if (opModeIsActive()) {
+        if (!opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
                 tfod.activate();
             }
 
             visionTime.reset();
-            while (opModeIsActive() && visionTime.seconds() < 3) {
+            while (!opModeIsActive() && !isStopRequested()) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -188,6 +150,44 @@ public class RRBotAuto_Crater extends LinearOpMode {
             tfod.shutdown();
         }
 
+        // Wait for the game to start (driver presses PLAY)
+        //waitForStart();
+        while (!opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("status", "waiting for start command...");
+            telemetry.update();
+        }
+
+
+        // Step through each leg of the path,
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
+        // Step 1:  Go down for 6 seconds
+        robot.liftArm.setPower(-LIFT_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 6)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+        //Stop the lift motor
+        robot.liftArm.setPower(0);
+
+        // Step 2: Run Vuforia code
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        /** Wait for the game to begin */
+        telemetry.addData(">", "Press Play to start tracking");
+        telemetry.update();
+        waitForStart();
+
         // Step 3:  Release the servo
         robot.liftPin.setPosition(1);
 
@@ -217,34 +217,27 @@ public class RRBotAuto_Crater extends LinearOpMode {
             TurnByGyro(TURN_SPEED, "left", 88);
         }
 
-        //4-5 NON SAMPLING
-        // Step 4: Drive forward 16 inches
-        //encoderDrive(DRIVE_SPEED,  17,  17, 5.0);
-
-        // Step 5: Turn left 90 degrees
-        //TurnByGyro(TURN_SPEED, "left", 90);
-
         // Step 6: Drive forward 85 inches
         encoderDrive(DRIVE_SPEED, 52, 52, 10.0);
 
         // Step 7: turn Left 42 degrees
         TurnByGyro(TURN_SPEED, "left", 35);
 
-        // Step 8: Drive forward 98 inches
-        encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
+        // Step 8: Drive forward 27 inches
+        encoderDrive(DRIVE_SPEED, 27, 27, 10.0);
 
         // Step 9: Drop marker
         robot.markerDropper.setPosition(1);
-        //sleep(500);
+        sleep(500);
         robot.markerDropper.setPosition(0);
 
-        // Step 10: Drive Backward 86 inches
-        encoderDrive(DRIVE_SPEED, -60, -60, 10.0);
+        // Step 10: Drive Backward 60 inches
+        encoderDrive(DRIVE_SPEED, -59, -59, 10.0);
 
-        sleep(1000);     // pause for servos to move
+        //sleep(1000);     // pause for servos to move
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
+        //telemetry.addData("Path", "Complete");
+        //telemetry.update();
     }
 
     /*
