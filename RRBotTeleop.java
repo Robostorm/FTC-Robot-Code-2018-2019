@@ -160,7 +160,7 @@ public class RRBotTeleop extends OpMode
             if (markerInit) {
                 robot.markerDropper.setPosition(1);
                 markerInit = false;
-            } else {
+            } else if (!markerInit) {
                 robot.markerDropper.setPosition(0);
                 markerInit = true;
             }
@@ -175,13 +175,19 @@ public class RRBotTeleop extends OpMode
      * Shows debug values to be on the driver station
      */
     public void telemetry() {
+        // Show the robots name
+        telemetry.addData("Name", "Name: Tim" );
+
         // Show the elapsed game time
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         // Show the wheel power
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
-        // Show the state of the Pin
+        // Show the state of the pin
         telemetry.addData("Pin", "Initiated: " + liftPinInit);
+
+        // Show the state of  the marker dropper
+        telemetry.addData("Marker", "Initiated: " + markerInit);
     }
 }

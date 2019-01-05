@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -16,6 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +35,6 @@ public class RRBotAuto_Crater extends LinearOpMode {
     /* Declare OpMode members. */
     RRBotHardware         robot   = new RRBotHardware();
     private ElapsedTime     runtime = new ElapsedTime();
-    private ElapsedTime     visionTime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
@@ -78,6 +80,8 @@ public class RRBotAuto_Crater extends LinearOpMode {
         robot.init(hardwareMap);
         initGyro();
 
+        telemetry.addData("Name", "Name: Andrew" );
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
@@ -100,22 +104,83 @@ public class RRBotAuto_Crater extends LinearOpMode {
                           robot.frontLeftDrive.getCurrentPosition());
         telemetry.update();
 
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        /** Wait for the game to begin */
+        telemetry.addData(">", "Press Play to start tracking");
+        telemetry.update();
+
         if (!opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
                 tfod.activate();
             }
 
-            visionTime.reset();
+            //visionTime.reset();
             while (!opModeIsActive() && !isStopRequested()) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
                     if (updatedRecognitions != null) {
+
+                        // Now sort by address instead of name (default).
+                        Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
+                            public int compare(Recognition one, Recognition other) {
+                                if (one.getTop() > other.getTop()) {
+                                    return -1;
+                                } else if (one.getTop() < other.getTop()) {
+                                    return 1;
+                                } else {
+                                    return 0;
+                                }
+                            }
+                        });
+
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
-                            int goldMineralX = -1;
+                        if (updatedRecognitions.size() > 0) {
+                            telemetry.addData("Lowest object", updatedRecognitions.get(0).getTop());
+                        }
+
+                        if (updatedRecognitions.size() > 1) {
+                            telemetry.addData("2nd Lowest object", updatedRecognitions.get(1).getTop());
+                        }
+
+                        if (updatedRecognitions.size() > 2) {
+                            telemetry.addData("3rd Lowest object", updatedRecognitions.get(2).getTop());
+                        }
+
+                        if (updatedRecognitions.size() >= 2) {
+                            Recognition left;
+                            Recognition center;
+                            if (updatedRecognitions.get(0).getLeft() < updatedRecognitions.get(1).getLeft()) {
+                                left = updatedRecognitions.get(0);
+                                center = updatedRecognitions.get(1);
+                            } else {
+                                left = updatedRecognitions.get(1);
+                                center = updatedRecognitions.get(0);
+                            }
+                            if (left.getLabel().equals(LABEL_SILVER_MINERAL) && center.getLabel().equals(LABEL_SILVER_MINERAL)) {
+                                telemetry.addData("Gold Mineral Position", "Right");
+                                goldPos = "right";
+                            } else if (left.getLabel().equals(LABEL_SILVER_MINERAL) && center.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                telemetry.addData("Gold Mineral Position", "Center");
+                                goldPos = "center";
+                            } else if (left.getLabel().equals(LABEL_GOLD_MINERAL) && center.getLabel().equals(LABEL_SILVER_MINERAL)) {
+                                telemetry.addData("Gold Mineral Position", "Left");
+                                goldPos = "left";
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Andrew is confused");
+                                goldPos = "center";
+                            }
+                            /*int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
                             for (Recognition recognition : updatedRecognitions) {
@@ -138,7 +203,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
                                     telemetry.addData("Gold Mineral Position", "Center");
                                     goldPos = "center";
                                 }
-                            }
+                            }*/
                         }
                         telemetry.update();
                     }
@@ -164,7 +229,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
         // Step 1:  Go down for 6 seconds
         robot.liftArm.setPower(-LIFT_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 6)) {
+        while (opModeIsActive() && (runtime.seconds() < 6.5)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -175,48 +240,94 @@ public class RRBotAuto_Crater extends LinearOpMode {
         // Step 2: Run Vuforia code
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
 
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start tracking");
-        telemetry.update();
-        waitForStart();
-
-        // Step 3:  Release the servo
+        // Step 3: Release the servo
         robot.liftPin.setPosition(1);
 
         // Wait one second before moving
         sleep(2000);
 
-        //SAMPLING DRIVE
+        // Run based on gold mineral position
         encoderDrive(DRIVE_SPEED,  12,  12, 5.0);
-        if(goldPos.equals("left"))
-        {
+        if(goldPos.equals("left")) {
+
+            // Step 5: Hit gold marker off tape
             TurnByGyro(TURN_SPEED, "left", 35);
             encoderDrive(DRIVE_SPEED, 20, 20, 5);
             encoderDrive(DRIVE_SPEED, -14, -14, 5);
-            TurnByGyro(TURN_SPEED, "left", 50);
+            TurnByGyro(TURN_SPEED, "left", 46);
+
+            // Step 6: Drive forward 52 inches
+            encoderDrive(DRIVE_SPEED, 53, 53, 10.0);
+
+            // Step 7: Turn left 42 degrees
+            TurnByGyro(TURN_SPEED, "left", 35);
+
+            // Step 8: Drive forward 27 inches
+            encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
+
+            // Step 9: Drop marker
+            robot.markerDropper.setPosition(1);
+            sleep(500);
+            robot.markerDropper.setPosition(0);
+
+            // Turn 3 degrees to offset imperfection
+            // TurnByGyro(TURN_SPEED, "left", 3);
+
+            // Step 10: Drive Backward 60 inches
+            encoderDrive(DRIVE_SPEED, -64, -64, 10.0);
         }
-        else if(goldPos.equals("right"))
-        {
+        else if(goldPos.equals("right")) {
             TurnByGyro(TURN_SPEED, "right", 40);
             encoderDrive(DRIVE_SPEED, 20, 20, 5);
             encoderDrive(DRIVE_SPEED, -13, -13, 5);
             TurnByGyro(TURN_SPEED, "left", 130);
+
+
+            encoderDrive(DRIVE_SPEED, 56, 56, 10.0);
+
+            // Step 7: turn Left 42 degrees
+            TurnByGyro(TURN_SPEED, "left", 35);
+
+            // Step 8: Drive forward 27 inches
+            encoderDrive(DRIVE_SPEED, 32, 32, 10.0);
+
+            // Step 9: Drop marker
+            robot.markerDropper.setPosition(1);
+            sleep(500);
+            robot.markerDropper.setPosition(0);
+
+            TurnByGyro(TURN_SPEED, "left", 2);
+
+            // Step 10: Drive Backward 60 inches
+            encoderDrive(DRIVE_SPEED, -60, -60, 10.0);
         }
-        else
-        {
+        else { //center
             encoderDrive(DRIVE_SPEED, 15, 15, 5);
             encoderDrive(DRIVE_SPEED, -8, -8, 5);
             TurnByGyro(TURN_SPEED, "left", 88);
-        }
 
+
+            encoderDrive(DRIVE_SPEED, 56, 56, 10.0);
+
+            // Step 7: turn Left 42 degrees
+            TurnByGyro(TURN_SPEED, "left", 32);
+
+            // Step 8: Drive forward 27 inches
+            encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
+
+            // Step 9: Drop marker
+            robot.markerDropper.setPosition(1);
+            sleep(500);
+            robot.markerDropper.setPosition(0);
+
+            // TurnByGyro(TURN_SPEED, "left", 2);
+
+            // Step 10: Drive Backward 60 inches
+            encoderDrive(DRIVE_SPEED, -66, -66, 10.0);
+        }
+        /*
         // Step 6: Drive forward 85 inches
         encoderDrive(DRIVE_SPEED, 52, 52, 10.0);
 
@@ -224,15 +335,17 @@ public class RRBotAuto_Crater extends LinearOpMode {
         TurnByGyro(TURN_SPEED, "left", 35);
 
         // Step 8: Drive forward 27 inches
-        encoderDrive(DRIVE_SPEED, 27, 27, 10.0);
+        encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
 
         // Step 9: Drop marker
         robot.markerDropper.setPosition(1);
         sleep(500);
         robot.markerDropper.setPosition(0);
 
+        TurnByGyro(TURN_SPEED, "left", 3);
+
         // Step 10: Drive Backward 60 inches
-        encoderDrive(DRIVE_SPEED, -59, -59, 10.0);
+        encoderDrive(DRIVE_SPEED, -60, -60, 10.0);*/
 
         //sleep(1000);     // pause for servos to move
 
