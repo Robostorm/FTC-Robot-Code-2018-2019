@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.provider.Telephony;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-import java.sql.Driver;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,15 +32,10 @@ import java.util.Locale;
 public class RRBotAuto_HomeDepot extends LinearOpMode {
 
     /* Declare OpMode members. */
-    RRBotHardware         robot   = new RRBotHardware();
-    private ElapsedTime     runtime = new ElapsedTime();
+    RRBotHardware robot = new RRBotHardware();
+    private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.7;
+    static final double     DRIVE_SPEED             = 0.25;
     static final double     TURN_SPEED              = 0.4;
     static final double     LIFT_SPEED              = 1;
 
@@ -93,10 +85,10 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
         robot.frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rearLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rearLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
@@ -182,30 +174,6 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
                                 telemetry.addData("Gold Mineral Position", "Andrew is confused");
                                 goldPos = "center";
                             }
-                            /*int goldMineralX = -1;
-                            int silverMineral1X = -1;
-                            int silverMineral2X = -1;
-                            for (Recognition recognition : updatedRecognitions) {
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    goldMineralX = (int) recognition.getLeft();
-                                } else if (silverMineral1X == -1) {
-                                    silverMineral1X = (int) recognition.getLeft();
-                                } else {
-                                    silverMineral2X = (int) recognition.getLeft();
-                                }
-                            }
-                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Left");
-                                    goldPos = "left";
-                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Right");
-                                    goldPos = "right";
-                                } else {
-                                    telemetry.addData("Gold Mineral Position", "Center");
-                                    goldPos = "center";
-                                }
-                            }*/
                         }
                         telemetry.update();
                     }
@@ -231,7 +199,7 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
         // Step 1:  Go down for 6 seconds
         robot.liftArm.setPower(-LIFT_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 6.5)) {
+        while (opModeIsActive() && (runtime.seconds() < 7)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -251,207 +219,109 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
         sleep(2000);
 
         // Run based on gold mineral position
-        encoderDrive(DRIVE_SPEED,  12,  12, 5.0);
+        Drive.encoder(DRIVE_SPEED,  12, 5.0, this, robot);
+
+        robot.liftPin.setPosition(0);
+
         if(goldPos.equals("left")) {
             TurnByGyro(TURN_SPEED, "left", 40);
-            encoderDrive(DRIVE_SPEED, 20, 20, 5);
+            Drive.encoder(DRIVE_SPEED, 20, 5, this, robot);
             TurnByGyro(TURN_SPEED, "right", 18);
 
 
-            encoderDrive(DRIVE_SPEED, 18, 18, 10.0);
+            Drive.encoder(DRIVE_SPEED, 14, 10.0, this, robot);
 
-            encoderDrive(DRIVE_SPEED,-2, -2, 10.0);
+            Drive.encoder(DRIVE_SPEED,-2,10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "right", 65);
 
-            encoderDrive(DRIVE_SPEED, 24, 24, 10.0);
+            Drive.encoder(DRIVE_SPEED, 24, 10.0, this, robot);
 
-            TurnByGyro(TURN_SPEED, "left", 20);
+            TurnByGyro(TURN_SPEED, "left", 35);
 
             // Step 9: Drop marker
             robot.markerDropper.setPosition(1);
             sleep(500);
             robot.markerDropper.setPosition(0);
 
-            TurnByGyro(TURN_SPEED, "right", 20);
+            TurnByGyro(TURN_SPEED, "right", 35);
 
-            encoderDrive(DRIVE_SPEED, -24, -24, 10.0);
+            Drive.encoder(DRIVE_SPEED, -77, 10.0, this, robot); //-78
         }
         else if(goldPos.equals("right")) {
             TurnByGyro(TURN_SPEED, "right", 40);
-            encoderDrive(DRIVE_SPEED, 20, 20, 5);
+            Drive.encoder(DRIVE_SPEED, 20, 5, this, robot);
             TurnByGyro(TURN_SPEED, "left", 18);
 
 
-            encoderDrive(DRIVE_SPEED, 18, 18, 10.0);
+            Drive.encoder(DRIVE_SPEED, 13, 10.0, this, robot);
 
-            encoderDrive(DRIVE_SPEED,-2, -2, 10.0);
+            Drive.encoder(DRIVE_SPEED,-3, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 65);
 
-            encoderDrive(DRIVE_SPEED, 24, 24, 10.0);
+            Drive.encoder(DRIVE_SPEED, 26, 10.0, this, robot);
 
             // Step 9: Drop marker
             robot.markerDropper.setPosition(1);
             sleep(500);
             robot.markerDropper.setPosition(0);
+
+            Drive.encoder(DRIVE_SPEED, -4, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 56);
 
-            encoderDrive(DRIVE_SPEED, 19, 19, 10.0);
+            Drive.encoder(DRIVE_SPEED, 12, 10.0, this, robot);
+
+            TurnByGyro(TURN_SPEED, "left", 13);
+
+            Drive.encoder(DRIVE_SPEED, 6, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 10);
 
-            encoderDrive(DRIVE_SPEED, 24, 24, 10.0);
+            Drive.encoder(DRIVE_SPEED, 50, 10.0, this, robot);
 
-            // Step 7: turn Left 42 degrees
-            // TurnByGyro(TURN_SPEED, "left", 35);
 
-            // Step 8: Drive forward 27 inches
-            // encoderDrive(DRIVE_SPEED, 32, 32, 10.0);
-
-            // Step 9: Drop marker
-            //robot.markerDropper.setPosition(1);
-            //sleep(500);
-            //robot.markerDropper.setPosition(0);
-
-            //TurnByGyro(TURN_SPEED, "left", 2);
-
-            // Step 10: Drive Backward 60 inches
-            //encoderDrive(DRIVE_SPEED, -60, -60, 10.0);
         }
         else { //center
-            encoderDrive(DRIVE_SPEED, 38, 38, 5);
+            Drive.encoder(DRIVE_SPEED, 38, 5, this, robot);
 
             // Step 9: Drop marker
             robot.markerDropper.setPosition(1);
             sleep(500);
             robot.markerDropper.setPosition(0);
 
-            encoderDrive(DRIVE_SPEED, -3, -3, 10.0);
+            Drive.encoder(DRIVE_SPEED, -3, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 88);
 
-            encoderDrive(DRIVE_SPEED, 14, 14, 10.0);
+            Drive.encoder(DRIVE_SPEED, 8, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 10);
 
-            encoderDrive(DRIVE_SPEED, 8, 8, 10.0);
+            Drive.encoder(DRIVE_SPEED, 4, 10.0, this, robot);
 
             TurnByGyro(TURN_SPEED, "left", 11);
 
-            encoderDrive(DRIVE_SPEED, 20, 20, 10.0);
+            Drive.encoder(DRIVE_SPEED, 2, 10.0, this, robot);
+
+            TurnByGyro(TURN_SPEED, "left", 5);
+
+            Drive.encoder(DRIVE_SPEED, 2, 10.0, this, robot);
+
+            TurnByGyro(TURN_SPEED, "left", 4);
+
+            Drive.encoder(DRIVE_SPEED, 47, 10.0, this, robot);
+
+            //TurnByGyro(TURN_SPEED, "left", 5);
 
             // TurnByGyro(TURN_SPEED, "left", 2);
 
             // Step 10: Drive Backward 60 inches
             //encoderDrive(DRIVE_SPEED, -66, -66, 10.0);
         }
-        /*
-        // Step 6: Drive forward 85 inches
-        encoderDrive(DRIVE_SPEED, 52, 52, 10.0);
-
-        // Step 7: turn Left 42 degrees
-        TurnByGyro(TURN_SPEED, "left", 35);
-
-        // Step 8: Drive forward 27 inches
-        encoderDrive(DRIVE_SPEED, 30, 30, 10.0);
-
-        // Step 9: Drop marker
-        robot.markerDropper.setPosition(1);
-        sleep(500);
-        robot.markerDropper.setPosition(0);
-
-        TurnByGyro(TURN_SPEED, "left", 3);
-
-        // Step 10: Drive Backward 60 inches
-        encoderDrive(DRIVE_SPEED, -60, -60, 10.0);*/
-
-        //sleep(1000);     // pause for servos to move
-
-        //telemetry.addData("Path", "Complete");
-        //telemetry.update();
     }
 
-    /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newRearRightTarget;
-        int newRearLeftTarget;
-        int newFrontRightTarget;
-        int newFrontLeftTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newRearRightTarget = robot.rearRightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newRearLeftTarget = robot.rearLeftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newFrontRightTarget = robot.frontRightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newFrontLeftTarget = robot.frontLeftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-
-            robot.rearRightDrive.setTargetPosition(newRearRightTarget);
-            robot.rearLeftDrive.setTargetPosition(newRearLeftTarget);
-            robot.frontRightDrive.setTargetPosition(newFrontRightTarget);
-            robot.frontLeftDrive.setTargetPosition(newFrontLeftTarget);
-
-            // Turn On RUN_TO_POSITION
-            robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rearLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            robot.rearRightDrive.setPower(Math.abs(speed));
-            robot.rearLeftDrive.setPower(Math.abs(speed));
-            robot.frontRightDrive.setPower(Math.abs(speed));
-            robot.frontLeftDrive.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.rearRightDrive.isBusy() && robot.rearLeftDrive.isBusy() && robot.frontRightDrive.isBusy() && robot.frontLeftDrive.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Front Running to %7d :%7d", newFrontRightTarget,  newFrontLeftTarget);
-                telemetry.addData("Path2",  "Rear Running to %7d :%7d", newRearRightTarget,  newRearLeftTarget);
-                telemetry.addData("Path3",  "Running at %7d :%7d",
-                                            robot.rearRightDrive.getCurrentPosition(),
-                                            robot.rearLeftDrive.getCurrentPosition(),
-                                            robot.frontRightDrive.getCurrentPosition(),
-                                            robot.frontLeftDrive.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            robot.rearRightDrive.setPower(0);
-            robot.rearLeftDrive.setPower(0);
-            robot.frontRightDrive.setPower(0);
-            robot.frontLeftDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.rearRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rearLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
-        }
-    }
     public void TurnByGyro(double speed, String direction, int angle) {
         //get angle values from the gyro
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

@@ -22,14 +22,15 @@ public class RRBotTeleop extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     boolean liftPinInit;
     boolean markerInit;
-    boolean slowDrive;
     boolean prevSlowDrive;
+    boolean prevXSlowDrive;
     boolean prevLiftArm;
     boolean prevMarker;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftPower;
     double rightPower;
+    String driveMode;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -43,11 +44,10 @@ public class RRBotTeleop extends OpMode
 
         robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        driveMode = "deafult";
+
         // Set the servoInit to true in the beginning of the match
         liftPinInit = true;
-
-        // Set slowDrive to false in the beginning of the match
-        slowDrive = false;
 
         telemetry.addData("Status", "Initialized");
 
@@ -102,10 +102,10 @@ public class RRBotTeleop extends OpMode
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.left_stick_x;
         if (gamepad1.b && !prevSlowDrive) {
-            if (slowDrive) {
-                slowDrive = false;
+            if (driveMode.equals("slowDrive") || driveMode.equals("XSlowDrive")) {
+                driveMode = "deafult";
             } else {
-                slowDrive = true;
+                driveMode = "slowDrive";
             }
             prevSlowDrive = true;
         }
@@ -113,19 +113,40 @@ public class RRBotTeleop extends OpMode
             prevSlowDrive = false;
         }
 
-        if (slowDrive) {
-            leftPower = Range.clip(drive + turn, -1.0, 1.0)/2;
-            rightPower = Range.clip(drive - turn, -1.0, 1.0)/2;
-        } else {
+        if (gamepad1.x && !prevXSlowDrive) {
+            if (driveMode.equals("slowDrive") || driveMode.equals("XSlowDrive")) {
+                driveMode = "deafult";
+            } else {
+                driveMode = "XSlowDrive";
+            }
+            prevXSlowDrive = true;
+        }
+        if (!gamepad1.x) {
+            prevXSlowDrive = false;
+        }
+
+        if (driveMode.equals("slowDrive")) {
+            leftPower = Range.clip(drive + turn, -1.0, 1.0)/1.5;
+            rightPower = Range.clip(drive - turn, -1.0, 1.0)/1.5;
+        } else if (driveMode.equals("XSlowDrive")) {
+            leftPower = Range.clip(drive + turn, -1.0, 1.0)/3.5;
+            rightPower = Range.clip(drive - turn, -1.0, 1.0)/3.5;
+        }
+        else {
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
             rightPower = Range.clip(drive - turn, -1.0, 1.0);
         }
 
         // Send calculated power to wheels
-        robot.rearRightDrive.setPower(rightPower);
+        robot.rearRightDrive.setPower(robot.frontRightDrive.getPower());
         robot.rearLeftDrive.setPower(leftPower);
         robot.frontRightDrive.setPower(rightPower);
         robot.frontLeftDrive.setPower(leftPower);
+
+        telemetry.addData("encoder", "rear right: " + robot.rearRightDrive.getCurrentPosition());
+        telemetry.addData("encoder", "rear left: " + robot.rearLeftDrive.getCurrentPosition());
+        telemetry.addData("encoder", "front right: " + robot.frontRightDrive.getCurrentPosition());
+        telemetry.addData("encoder", "front left: " + robot.frontLeftDrive.getCurrentPosition());
     }
 
     /**
