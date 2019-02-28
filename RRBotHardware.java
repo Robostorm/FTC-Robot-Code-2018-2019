@@ -21,8 +21,6 @@ public class RRBotHardware
     public DcMotor frontLeftDrive = null;
     public DcMotor liftArm = null;
     public Servo liftPin = null;
-    public Servo plow = null;
-    public Servo markerDropper = null;
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -51,10 +49,10 @@ public class RRBotHardware
         liftArm = hwMap.get(DcMotor.class, "lift-arm");
 
         //set motors to drive forwards
-        rearRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        rearRightDrive.setDirection(DcMotor.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         liftArm.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
@@ -80,7 +78,6 @@ public class RRBotHardware
 
         // Define and initialize ALL installed servos.
         liftPin = hwMap.get(Servo.class, "lift-pin");
-        markerDropper = hwMap.get(Servo.class, "marker-dropper");
     }
  }
 

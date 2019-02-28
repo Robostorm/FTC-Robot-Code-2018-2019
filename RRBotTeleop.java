@@ -78,9 +78,11 @@ public class RRBotTeleop extends OpMode
 
         driveUpdate();
 
-        liftArmUpdate();
+        frontArmUpdate();
 
-        markerUpdate();
+        rearArmUpdate();
+
+        liftArmUpdate();
 
         telemetry();
     }
@@ -138,7 +140,7 @@ public class RRBotTeleop extends OpMode
         }
 
         // Send calculated power to wheels
-        robot.rearRightDrive.setPower(robot.frontRightDrive.getPower());
+        robot.rearRightDrive.setPower(rightPower);
         robot.rearLeftDrive.setPower(leftPower);
         robot.frontRightDrive.setPower(rightPower);
         robot.frontLeftDrive.setPower(leftPower);
@@ -150,10 +152,20 @@ public class RRBotTeleop extends OpMode
     }
 
     /**
+     * Updates the front arm. Reads button inputs to move the arm in and out and control the intake
+     */
+    public void frontArmUpdate() {
+
+    }
+
+    /**
+     * Updates the rear arm. Reads button inputs to move the arm up and down and control the output
+     */
+
+    /**
      * Updates the lifting arm. Reads button inputs to move the arm up and down and move the pin in and out
      */
     public void liftArmUpdate() {
-
         robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Use right stick on operator controller to control lift arm
         robot.liftArm.setPower(gamepad2.left_stick_y);
@@ -173,22 +185,6 @@ public class RRBotTeleop extends OpMode
         }
         if (!gamepad2.b){
             prevLiftArm = false;
-        }
-    }
-
-    public void markerUpdate() {
-        if (gamepad2.y && !prevMarker) {
-            if (markerInit) {
-                robot.markerDropper.setPosition(1);
-                markerInit = false;
-            } else if (!markerInit) {
-                robot.markerDropper.setPosition(0);
-                markerInit = true;
-            }
-            prevMarker = true;
-        }
-        if (!gamepad2.y) {
-            prevMarker = false;
         }
     }
 
