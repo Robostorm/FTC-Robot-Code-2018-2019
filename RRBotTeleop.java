@@ -20,17 +20,24 @@ public class RRBotTeleop extends OpMode
     // Declare OpMode members.
     RRBotHardware robot = new RRBotHardware();
     private ElapsedTime runtime = new ElapsedTime();
+
+    // front arm variables
+    boolean frontArmExtended;
+    boolean prevFrontArmExtended;
+    boolean intakeFolded;
+    boolean prevIntakeFolded;
+
+    // rear arm variables
+    boolean rearArmExtended;
+    boolean prevRearArmExtended;
+
+    // lift arm variables
     boolean liftPinInit;
-    boolean markerInit;
-    boolean prevSlowDrive;
-    boolean prevXSlowDrive;
-    boolean prevLiftArm;
-    boolean prevMarker;
+    boolean prevLiftPinInit;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftPower;
     double rightPower;
-    String driveMode;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -41,10 +48,6 @@ public class RRBotTeleop extends OpMode
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
-        robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        driveMode = "deafult";
 
         // Set the servoInit to true in the beginning of the match
         liftPinInit = true;
@@ -80,8 +83,6 @@ public class RRBotTeleop extends OpMode
 
         frontArmUpdate();
 
-        rearArmUpdate();
-
         liftArmUpdate();
 
         telemetry();
@@ -98,82 +99,111 @@ public class RRBotTeleop extends OpMode
      * Updates the drive system with manual and automatic movements
      */
     public void driveUpdate() {
-
         // Uses left stick to move forward and to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.left_stick_x;
-        if (gamepad1.b && !prevSlowDrive) {
-            if (driveMode.equals("slowDrive") || driveMode.equals("XSlowDrive")) {
-                driveMode = "deafult";
-            } else {
-                driveMode = "slowDrive";
-            }
-            prevSlowDrive = true;
-        }
-        if (!gamepad1.b) {
-            prevSlowDrive = false;
-        }
 
-        if (gamepad1.x && !prevXSlowDrive) {
-            if (driveMode.equals("slowDrive") || driveMode.equals("XSlowDrive")) {
-                driveMode = "deafult";
-            } else {
-                driveMode = "XSlowDrive";
-            }
-            prevXSlowDrive = true;
-        }
-        if (!gamepad1.x) {
-            prevXSlowDrive = false;
-        }
 
-        if (driveMode.equals("slowDrive")) {
-            leftPower = Range.clip(drive + turn, -1.0, 1.0)/1.5;
-            rightPower = Range.clip(drive - turn, -1.0, 1.0)/1.5;
-        } else if (driveMode.equals("XSlowDrive")) {
-            leftPower = Range.clip(drive + turn, -1.0, 1.0)/3.5;
-            rightPower = Range.clip(drive - turn, -1.0, 1.0)/3.5;
-        }
-        else {
-            leftPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive - turn, -1.0, 1.0);
-        }
+        leftPower = Range.clip(drive + turn, -1.0, 1.0)/2;
+        rightPower = Range.clip(drive - turn, -1.0, 1.0)/2;
+
+        leftPower = leftPower + gamepad1.right_trigger;
+        rightPower = rightPower + gamepad1.right_trigger;
 
         // Send calculated power to wheels
         robot.rearRightDrive.setPower(rightPower);
         robot.rearLeftDrive.setPower(leftPower);
         robot.frontRightDrive.setPower(rightPower);
         robot.frontLeftDrive.setPower(leftPower);
-
-        telemetry.addData("encoder", "rear right: " + robot.rearRightDrive.getCurrentPosition());
-        telemetry.addData("encoder", "rear left: " + robot.rearLeftDrive.getCurrentPosition());
-        telemetry.addData("encoder", "front right: " + robot.frontRightDrive.getCurrentPosition());
-        telemetry.addData("encoder", "front left: " + robot.frontLeftDrive.getCurrentPosition());
     }
 
     /**
      * Updates the front arm. Reads button inputs to move the arm in and out and control the intake
      */
     public void frontArmUpdate() {
+        // Use right stick left and right on operator controller to control front arm
+        //robot.frontArm.setPower(gamepad2.right_stick_x);
+        if (gamepad2.dpad_right && frontArmExtended) {
+            robot.frontArm.setTargetPosition(0);
+            robot.frontArm.setPower(1);
+            frontArmExtended = false;
+        } else if (gamepad2.dpad_left && !frontArmExtended) {
+            robot.frontArm.setTargetPosition(-1);
+            robot.frontArm.setPower(1);
+            frontArmExtended = true;
+        }
+        /*
+        // Use left and right d-pad buttons on operator controller to move arm in and out based on preset positions
+        if (!prevFrontArmExtended) {
+            if (gamepad2.dpad_right && frontArmExtended) {
+                robot.frontArm.setTargetPosition(0);
+                robot.frontArm.setPower(1);
+                frontArmExtended = false;
+            } else if (gamepad2.dpad_left && !frontArmExtended) {
+                robot.frontArm.setTargetPosition(1000);
+                robot.frontArm.setPower(1);
+                frontArmExtended = true;
+            }
+            prevFrontArmExtended = true;
+        }
+        if (!gamepad2.dpad_right || !gamepad2.dpad_left){
+            prevFrontArmExtended = false;
+        }
 
+        // Use "a" button on operator controller to move intake up and down
+        if (gamepad2.a && !prevIntakeFolded) {
+            if (intakeFolded) {
+                robot.intakeServo.setPosition(1);
+                intakeFolded = false;
+            } else if (!intakeFolded) {
+                robot.intakeServo.setPosition(0);
+                intakeFolded = true;
+            }
+            prevIntakeFolded = true;
+        }
+        if (!gamepad2.a){
+            prevIntakeFolded = false;
+        }
+        */
     }
 
     /**
      * Updates the rear arm. Reads button inputs to move the arm up and down and control the output
      */
+    public void rearArmUpdate() {
+        // Use right stick up and down on operator controller to control rear arm
+        robot.frontArm.setPower(gamepad2.right_stick_y);
+        /*
+        // Use up and down d-pad buttons on operator controller to move arm in and out based on preset positions
+        if (!prevRearArmExtended) {
+            if (gamepad2.dpad_down && rearArmExtended) {
+                robot.rearArm.setTargetPosition(0);
+                robot.rearArm.setPower(1);
+                rearArmExtended = false;
+            } else if (gamepad2.dpad_up && !rearArmExtended) {
+                robot.rearArm.setTargetPosition(10);
+                robot.rearArm.setPower(1);
+                frontArmExtended = true;
+            }
+            prevFrontArmExtended = true;
+        }
+        if (!gamepad2.dpad_down || !gamepad2.dpad_up) {
+            prevRearArmExtended = false;
+        }
+        */
+
+    }
 
     /**
      * Updates the lifting arm. Reads button inputs to move the arm up and down and move the pin in and out
      */
     public void liftArmUpdate() {
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // Use right stick on operator controller to control lift arm
+        // Use left stick on operator controller to control lift arm
         robot.liftArm.setPower(gamepad2.left_stick_y);
 
-        telemetry.addData("encoder", "encoder value: " + robot.liftArm.getCurrentPosition());
-
-        // Use "a" button on operator controller to move pin in and out
-        if (gamepad2.b && !prevLiftArm) {
+        // Use "b" button on operator controller to move pin in and out
+        if (gamepad2.b && !prevLiftPinInit) {
             if (liftPinInit) {
                 robot.liftPin.setPosition(1);
                 liftPinInit = false;
@@ -181,10 +211,10 @@ public class RRBotTeleop extends OpMode
                 robot.liftPin.setPosition(0);
                 liftPinInit = true;
             }
-            prevLiftArm = true;
+            prevLiftPinInit = true;
         }
         if (!gamepad2.b){
-            prevLiftArm = false;
+            prevLiftPinInit = false;
         }
     }
 
@@ -195,16 +225,18 @@ public class RRBotTeleop extends OpMode
         // Show the robots name
         telemetry.addData("Name", "Name: Tim" );
 
+        telemetry.addData("Encoder", "Count: " + robot.frontArm.getCurrentPosition());
+
         // Show the elapsed game time
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         // Show the wheel power
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
+        // Show the front arm status
+        telemetry.addData("Front-Arm", "Extended: " + frontArmExtended);
+
         // Show the state of the pin
         telemetry.addData("Pin", "Initiated: " + liftPinInit);
-
-        // Show the state of  the marker dropper
-        telemetry.addData("Marker", "Initiated: " + markerInit);
     }
 }

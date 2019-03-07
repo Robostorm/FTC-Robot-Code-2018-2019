@@ -240,9 +240,7 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
             TurnByGyro(TURN_SPEED, "left", 35);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
+
 
             TurnByGyro(TURN_SPEED, "right", 35);
 
@@ -263,9 +261,7 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
             Drive.encoder(DRIVE_SPEED, 26, 10.0, this, robot);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
+
 
             Drive.encoder(DRIVE_SPEED, -4, 10.0, this, robot);
 
@@ -287,9 +283,7 @@ public class RRBotAuto_HomeDepot extends LinearOpMode {
             Drive.encoder(DRIVE_SPEED, 38, 5, this, robot);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
+
 
             Drive.encoder(DRIVE_SPEED, -3, 10.0, this, robot);
 

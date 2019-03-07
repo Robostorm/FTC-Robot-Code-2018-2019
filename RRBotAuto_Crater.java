@@ -242,9 +242,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
             Drive.encoder(DRIVE_SPEED, 30, 10.0, this, robot);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
+
 
             // Turn 3 degrees to offset imperfection
             // TurnByGyro(TURN_SPEED, "left", 3);
@@ -268,9 +266,7 @@ public class RRBotAuto_Crater extends LinearOpMode {
             Drive.encoder(DRIVE_SPEED, 32,10.0, this, robot);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
+
 
             // Step 10: Drive Backward 60 inches
             Drive.encoder(DRIVE_SPEED, -65, 10.0, this, robot);
@@ -290,9 +286,6 @@ public class RRBotAuto_Crater extends LinearOpMode {
             Drive.encoder(DRIVE_SPEED, 32, 10.0, this, robot);
 
             // Step 9: Drop marker
-            robot.markerDropper.setPosition(1);
-            sleep(500);
-            robot.markerDropper.setPosition(0);
 
             TurnByGyro(TURN_SPEED, "left", 2);
 

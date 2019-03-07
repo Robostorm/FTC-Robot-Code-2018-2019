@@ -21,6 +21,7 @@ public class Drive {
     public static void encoder(double speed, double distance, double timeoutS, LinearOpMode opmode, RRBotHardware robot) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
+
         // Ensure that the opmode is still active
         if (opmode.opModeIsActive()) {
 
